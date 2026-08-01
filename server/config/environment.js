@@ -3,5 +3,6 @@ export function configuration(env = process.env) {
     port: Number(env.PORT),
     host: env.HOST,
     production: env.NODE_ENV === 'production',
+    mongoUri: env.MONGODB_URI,
   };
 }
