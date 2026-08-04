@@ -40,5 +40,6 @@ export function sandboxService({ db, client, clock = () => new Date() }) {
   return {
     start,
     find,
+    end: (tenantId) => repository.revoke({ tenantId }),
   };
 }

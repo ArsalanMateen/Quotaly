@@ -27,6 +27,12 @@ export function sandboxRoutes({ sandbox, authenticated }) {
       .status(result.resumed ? 200 : 201)
       .json({ active: true, expiresAt: result.tenant.expiresAt, token: result.token });
   });
+  router.delete('/sandbox/session', async (req, res) => {
+    const tenant = await sandbox.find(readWorkspaceToken(req));
+
+    if (tenant) await sandbox.end(tenant._id);
+    res.status(204).end();
+  });
 
   return router;
 }
