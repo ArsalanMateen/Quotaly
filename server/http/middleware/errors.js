@@ -1,3 +1,4 @@
+import { ZodError } from 'zod';
 import { AppError } from '../../shared/errors.js';
 
 export function notFound(_req, _res, next) {
@@ -5,6 +6,15 @@ export function notFound(_req, _res, next) {
 }
 
 export function errorHandler(error, _req, res, _next) {
+  if (error instanceof ZodError)
+    return res.status(422).json({
+      error: {
+        code: 'invalid_input',
+        message: 'Please check your input values and try again.',
+        details: error.issues.map(({ path, message }) => ({ path, message })),
+      },
+    });
+
   if (error instanceof AppError) {
     if (error.details.retryAfter) res.set('Retry-After', String(error.details.retryAfter));
 
@@ -27,7 +37,7 @@ export function errorHandler(error, _req, res, _next) {
   res.status(503).json({
     error: {
       code: 'service_unavailable',
-      message: 'The service could not complete this request. Retry with the same idempotency key.',
+      message: 'Something went wrong on our end. Please try again in a moment.',
     },
   });
 }
