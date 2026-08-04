@@ -2,10 +2,12 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { hash } from '../../shared/hash.js';
 import { transaction } from '../../infrastructure/database/transaction.js';
 import { sandboxRepository } from './repository.js';
+import { rateLimiter } from './rate.limiter.js';
 import { SANDBOX_DURATION_MS } from './policy.js';
 
 export function sandboxService({ db, client, clock = () => new Date() }) {
   const repository = sandboxRepository({ db, clock });
+  const { limitCreation } = rateLimiter({ db, clock });
 
   async function find(token) {
     if (!token) return null;
@@ -17,6 +19,7 @@ export function sandboxService({ db, client, clock = () => new Date() }) {
     const existing = await find(token);
 
     if (existing) return { tenant: existing, token, resumed: true };
+    await limitCreation(ip);
     const secret = randomBytes(32).toString('hex');
     const now = clock();
     const tenant = {

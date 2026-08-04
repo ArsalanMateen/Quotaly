@@ -1,1 +1,2 @@
 export const SANDBOX_DURATION_MS = 24 * 60 * 60 * 1000;
+export const SANDBOX_CREATIONS_PER_HOUR = 30;
