@@ -9,7 +9,22 @@ export const generateSchema = z
     outputTokens: quantity,
     reasoningTokens: quantity.default(0),
   })
-  .strict();
+  .strict()
+  .superRefine((v, ctx) => {
+    if (v.cachedInputTokens > v.inputTokens)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['cachedInputTokens'],
+        message: 'Cached input tokens cannot be greater than total input tokens.',
+      });
+
+    if (v.reasoningTokens > v.outputTokens)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['reasoningTokens'],
+        message: 'Reasoning tokens cannot be greater than total output tokens.',
+      });
+  });
 export const keySchema = z
   .string()
   .min(8)
