@@ -41,6 +41,13 @@ export function metering({ db, client, clock = () => new Date() }) {
           'Your workspace is still getting ready. Please try again in a moment.',
         );
 
+      if (sub.blocked)
+        throw new AppError(
+          402,
+          'payment_required',
+          'Your subscription needs payment before new usage can be recorded.',
+          { subscriptionStatus: sub.status },
+        );
       const plan = PLANS[sub?.planId];
       if (!plan) throw new AppError(503, 'invalid_plan', 'The workspace plan is unavailable.');
       const usage = (await repository.findMonth({ tenantId, month, session })) || {
