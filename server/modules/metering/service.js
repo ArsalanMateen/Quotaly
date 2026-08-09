@@ -1,25 +1,141 @@
-import { meteringRepository } from './repository.js';
-import { monthWindow } from '../../shared/time.js';
-import { PRICING } from './pricing.js';
-import { transaction } from '../../infrastructure/database/transaction.js';
-import { assertActiveTenant } from '../tenants/policy.js';
-const PLANS = {
-  free: {
-    _id: 'free',
-    name: 'Free',
-    tokens: 250000,
-    apiCalls: 500,
-  },
-  pro: {
-    _id: 'pro',
-    name: 'Pro',
-    tokens: 5000000,
-    apiCalls: 10000,
-  },
-};
+import { meteringRepository } from "./repository.js";
+import { randomUUID } from "node:crypto";
+import { AppError } from "../../shared/errors.js";
+import { fingerprint } from "../../shared/hash.js";
+import { monthWindow } from "../../shared/time.js";
+import { price, PRICING } from "./pricing.js";
+import { transaction } from "../../infrastructure/database/transaction.js";
+import { assertActiveTenant } from "../tenants/policy.js";
+
+const PLANS = Object.freeze({
+  free: { _id: "free", name: "Free", apiCalls: 1000, tokens: 100000 },
+  pro: { _id: "pro", name: "Pro", apiCalls: 10000, tokens: 1000000 },
+});
 
 export function metering({ db, client, clock = () => new Date() }) {
   const repository = meteringRepository({ db });
+
+  async function generate(tenantId, key, input) {
+    const requestHash = fingerprint(input);
+
+    return transaction(client, async (session) => {
+      const tenant = await repository.lockTenant({ tenantId, session });
+
+      assertActiveTenant(tenant, clock());
+
+      const existing = await repository.findEvent({ tenantId, key, session });
+
+      if (existing) {
+        if (existing.fingerprint !== requestHash)
+          throw new AppError(
+            409,
+            "idempotency_conflict",
+            "This key was already used with different token counts.",
+          );
+
+        return existing.response;
+      }
+
+      const now = clock();
+      const { month, end } = monthWindow(now);
+      const sub = await repository.findSubscription({ tenantId, session });
+
+      if (!sub)
+        throw new AppError(
+          503,
+          "tenant_not_ready",
+          "Your workspace is still getting ready. Please try again in a moment.",
+        );
+
+      if (sub.blocked)
+        throw new AppError(
+          402,
+          "payment_required",
+          "Your subscription needs payment before new usage can be recorded.",
+          { subscriptionStatus: sub.status },
+        );
+
+      const plan = PLANS[sub.planId];
+      if (!plan)
+        throw new AppError(
+          503,
+          "invalid_plan",
+          "The workspace plan is unavailable.",
+        );
+
+      const usage = (await repository.findMonth({
+        tenantId,
+        month,
+        session,
+      })) || {
+        apiCalls: 0,
+        tokens: 0,
+        costMicroUsd: 0,
+      };
+
+      const tokens = input.inputTokens + input.outputTokens;
+      const dimension =
+        usage.apiCalls + 1 > plan.apiCalls
+          ? "apiCalls"
+          : usage.tokens + tokens > plan.tokens
+            ? "tokens"
+            : null;
+
+      if (dimension)
+        throw new AppError(
+          429,
+          "quota_exceeded",
+          `Monthly ${dimension === "apiCalls" ? "API call" : "token"} quota exceeded.`,
+          {
+            dimension,
+            used: usage[dimension],
+            limit: plan[dimension],
+            requested: dimension === "apiCalls" ? 1 : tokens,
+            resetsAt: end.toISOString(),
+            retryAfter: Math.max(1, Math.ceil((end - now) / 1000)),
+          },
+        );
+
+      const costMicroUsd = price(input);
+      const id = randomUUID();
+      const response = {
+        id,
+        result: "Simulated generation complete.",
+        usage: { apiCalls: 1, tokens, ...input },
+        costMicroUsd,
+        currency: "USD",
+        priceVersion: PRICING.version,
+        createdAt: now.toISOString(),
+      };
+
+      await repository.insertEvent({
+        id,
+        tenantId,
+        key,
+        requestHash,
+        month,
+        input,
+        tokens,
+        costMicroUsd,
+        priceVersion: PRICING.version,
+        now,
+        response,
+        tenant,
+        session,
+      });
+
+      await repository.incrementMonth({
+        tenantId,
+        month,
+        tokens,
+        costMicroUsd,
+        tenant,
+        session,
+      });
+
+      return response;
+    });
+  }
 
   async function usage(tenantId) {
     return transaction(client, async (session) => {
@@ -27,10 +143,22 @@ export function metering({ db, client, clock = () => new Date() }) {
       const tenant = await repository.findTenant({ tenantId, session });
 
       assertActiveTenant(tenant, clock());
+
       const sub = await repository.findSubscription({ tenantId, session });
       const plan = PLANS[sub?.planId];
-      if (!plan) throw new AppError(503, 'invalid_plan', 'The workspace plan is unavailable.');
-      const totals = (await repository.findMonth({ tenantId, month, session })) || {
+
+      if (!plan)
+        throw new AppError(
+          503,
+          "invalid_plan",
+          "The workspace plan is unavailable.",
+        );
+
+      const totals = (await repository.findMonth({
+        tenantId,
+        month,
+        session,
+      })) || {
         apiCalls: 0,
         tokens: 0,
         costMicroUsd: 0,
@@ -52,11 +180,15 @@ export function metering({ db, client, clock = () => new Date() }) {
         used: { apiCalls: totals.apiCalls, tokens: totals.tokens },
         limits: { apiCalls: plan.apiCalls, tokens: plan.tokens },
         costMicroUsd: totals.costMicroUsd,
-        currency: 'USD',
+        currency: "USD",
         pricing: PRICING,
       };
     });
   }
 
-  return { usage };
+  return {
+    generate,
+    usage,
+    events: (tenantId) => repository.recentEvents({ tenantId }),
+  };
 }
