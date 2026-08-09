@@ -10,6 +10,9 @@ export function meteringRoutes({ meter, authenticated, billingConfigured }) {
       billingConfigured,
     });
   });
+  router.get('/events', authenticated, async (req, res) => {
+    res.json({ events: await meter.events(req.tenantId) });
+  });
   router.post('/generate', authenticated, async (req, res) => {
     const key = keySchema.parse(req.headers['idempotency-key']);
     const input = generateSchema.parse(req.body);

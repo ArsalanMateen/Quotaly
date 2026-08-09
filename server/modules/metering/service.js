@@ -48,7 +48,7 @@ export function metering({ db, client, clock = () => new Date() }) {
           'Your subscription needs payment before new usage can be recorded.',
           { subscriptionStatus: sub.status },
         );
-      const plan = PLANS[sub?.planId];
+      const plan = PLANS[sub.planId];
       if (!plan) throw new AppError(503, 'invalid_plan', 'The workspace plan is unavailable.');
       const usage = (await repository.findMonth({ tenantId, month, session })) || {
         apiCalls: 0,
@@ -147,5 +147,5 @@ export function metering({ db, client, clock = () => new Date() }) {
     });
   }
 
-  return { generate, usage };
+  return { generate, usage, events: (tenantId) => repository.recentEvents({ tenantId }) };
 }

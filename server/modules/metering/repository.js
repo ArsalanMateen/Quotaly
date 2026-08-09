@@ -1,5 +1,15 @@
 export function meteringRepository({ db }) {
   return {
+    async recentEvents({ tenantId }) {
+      const events = await db
+        .collection('usage_events')
+        .find({ tenantId }, { projection: { response: 1 } })
+        .sort({ createdAt: -1, _id: -1 })
+        .limit(20)
+        .toArray();
+
+      return events.map((event) => event.response);
+    },
     lockTenant({ tenantId, session }) {
       return db
         .collection('tenants')
