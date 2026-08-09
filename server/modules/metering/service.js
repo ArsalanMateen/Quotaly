@@ -49,6 +49,27 @@ export function metering({ db, client, clock = () => new Date() }) {
         costMicroUsd: 0,
       };
       const tokens = input.inputTokens + input.outputTokens;
+      const dimension =
+        usage.apiCalls + 1 > plan.apiCalls
+          ? 'apiCalls'
+          : usage.tokens + tokens > plan.tokens
+            ? 'tokens'
+            : null;
+
+      if (dimension)
+        throw new AppError(
+          429,
+          'quota_exceeded',
+          `Monthly ${dimension === 'apiCalls' ? 'API call' : 'token'} quota exceeded.`,
+          {
+            dimension,
+            used: usage[dimension],
+            limit: plan[dimension],
+            requested: dimension === 'apiCalls' ? 1 : tokens,
+            resetsAt: end.toISOString(),
+            retryAfter: Math.max(1, Math.ceil((end - now) / 1000)),
+          },
+        );
       const costMicroUsd = price(input);
       const id = randomUUID();
       const response = {
