@@ -13,3 +13,16 @@ export const PRICING = Object.freeze({
   longContextOutputMultiplier: 1.5,
   sourceUrl: 'https://developers.openai.com/api/docs/models/gpt-5.4',
 });
+
+export function price(input) {
+  const isLongContext = input.inputTokens > PRICING.longContextThreshold;
+  const inputMultiplier = isLongContext ? PRICING.longContextInputMultiplier : 1;
+  const outputMultiplier = isLongContext ? PRICING.longContextOutputMultiplier : 1;
+  const freshInputTokens = input.inputTokens - input.cachedInputTokens;
+
+  return Math.round(
+    freshInputTokens * PRICING.input * inputMultiplier +
+      input.cachedInputTokens * PRICING.cachedInput * inputMultiplier +
+      input.outputTokens * PRICING.output * outputMultiplier,
+  );
+}
