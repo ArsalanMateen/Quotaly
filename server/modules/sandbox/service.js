@@ -1,6 +1,8 @@
 import { randomBytes, randomUUID } from 'node:crypto';
+import { AppError } from '../../shared/errors.js';
 import { hash } from '../../shared/hash.js';
 import { transaction } from '../../infrastructure/database/transaction.js';
+import { assertActiveTenant } from '../tenants/policy.js';
 import { sandboxRepository } from './repository.js';
 import { rateLimiter } from './rate.limiter.js';
 import { SANDBOX_DURATION_MS } from './policy.js';
@@ -40,9 +42,27 @@ export function sandboxService({ db, client, clock = () => new Date() }) {
     return { tenant, token: secret, resumed: false };
   }
 
+  async function resetUsage(tenantId) {
+    return transaction(client, async (session) => {
+      const tenant = await repository.lock({ tenantId, session });
+
+      if (!tenant)
+        throw new AppError(
+          403,
+          'sandbox_only',
+          'Usage reset is available only in evaluator workspaces.',
+        );
+      assertActiveTenant(tenant, clock());
+      await repository.deleteUsage({ tenantId, session });
+
+      return { reset: true };
+    });
+  }
+
   return {
     start,
     find,
+    resetUsage,
     end: (tenantId) => repository.revoke({ tenantId }),
   };
 }

@@ -33,6 +33,12 @@ export function sandboxRoutes({ sandbox, authenticated }) {
     if (tenant) await sandbox.end(tenant._id);
     res.status(204).end();
   });
+  router.post('/sandbox/reset', authenticated, async (req, res) => {
+    z.object({})
+      .strict()
+      .parse(req.body || {});
+    res.json(await sandbox.resetUsage(req.tenantId));
+  });
 
   return router;
 }

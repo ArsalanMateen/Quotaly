@@ -21,5 +21,18 @@ export function sandboxRepository({ db, clock = () => new Date() }) {
           { session },
         );
     },
+    lock({ tenantId, session }) {
+      return db
+        .collection('tenants')
+        .findOneAndUpdate(
+          { _id: tenantId, isSandbox: true },
+          { $inc: { serial: 1 } },
+          { session, returnDocument: 'after' },
+        );
+    },
+    async deleteUsage({ tenantId, session }) {
+      await db.collection('usage_events').deleteMany({ tenantId }, { session });
+      await db.collection('usage_months').deleteMany({ tenantId }, { session });
+    },
   };
 }
