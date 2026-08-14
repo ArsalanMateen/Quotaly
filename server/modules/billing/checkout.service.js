@@ -60,6 +60,18 @@ export function checkoutService({ db, stripe, config, clock = () => new Date() }
         }
       }
 
+      const subscriptions = await stripe.subscriptions.list({
+        customer: customerId,
+        status: 'all',
+        limit: 100,
+      });
+
+      if (subscriptions.data.some((s) => !['canceled', 'incomplete_expired'].includes(s.status)))
+        throw new AppError(
+          409,
+          'subscription_exists',
+          'Stripe already has a subscription for this tenant. Wait for synchronization.',
+        );
       const price = await stripe.prices.retrieve(config.proPriceId);
 
       if (price.livemode || !price.recurring || !price.active)
