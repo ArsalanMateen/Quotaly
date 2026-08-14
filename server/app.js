@@ -5,6 +5,7 @@ import { sandboxService } from './modules/sandbox/service.js';
 import { tenantRepository } from './modules/tenants/repository.js';
 import { meteringRoutes } from './modules/metering/routes.js';
 import { billingRoutes } from './modules/billing/routes.js';
+import { webhookRoutes } from './modules/billing/webhook.routes.js';
 import { sandboxRoutes } from './modules/sandbox/routes.js';
 import { healthRoutes } from './http/health.routes.js';
 import { authenticate } from './http/middleware/authenticate.js';
@@ -25,6 +26,7 @@ export function createApp(dependencies) {
   app.disable('x-powered-by');
   app.set('trust proxy', config.production ? 1 : false);
 
+  app.use(webhookRoutes(payments));
   app.use(express.json({ limit: '16kb' }));
   app.use(healthRoutes(() => db.command({ ping: 1 })));
   app.use(sandboxRoutes({ sandbox, authenticated }));
