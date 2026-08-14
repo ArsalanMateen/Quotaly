@@ -1,7 +1,7 @@
 import { checkoutRepository } from './checkout.repository.js';
 import { randomUUID } from 'node:crypto';
 import { AppError } from '../../shared/errors.js';
-import { assertBillingReady } from './stripe.policy.js';
+import { assertBillingReady, idOf } from './stripe.policy.js';
 
 export function checkoutService({ db, stripe, config, clock = () => new Date() }) {
   const repository = checkoutRepository({ db, clock });
@@ -39,6 +39,25 @@ export function checkoutService({ db, stripe, config, clock = () => new Date() }
         if (customer.livemode) throw new Error('Live Stripe customer refused');
         customerId = customer.id;
         await repository.saveCustomer({ tenantId, lockId, customerId });
+      }
+
+      if (tenant.checkoutSessionId) {
+        const previous = await stripe.checkout.sessions.retrieve(tenant.checkoutSessionId);
+
+        if (previous.status === 'open') {
+          await stripe.checkout.sessions.expire(previous.id).catch(() => {});
+        } else if (previous.status === 'complete') {
+          const current =
+            previous.subscription &&
+            (await stripe.subscriptions.retrieve(idOf(previous.subscription)));
+
+          if (current && !['canceled', 'incomplete_expired'].includes(current.status))
+            throw new AppError(
+              409,
+              'subscription_sync_pending',
+              'Checkout is complete. Wait for the verified subscription update.',
+            );
+        }
       }
 
       const price = await stripe.prices.retrieve(config.proPriceId);
