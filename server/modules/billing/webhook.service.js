@@ -1,3 +1,12 @@
+function subscriptionState(status, supported) {
+  if (supported && ['active', 'trialing'].includes(status))
+    return { planId: 'pro', blocked: false };
+
+  if (['past_due', 'unpaid', 'incomplete', 'paused'].includes(status))
+    return { planId: 'free', blocked: true };
+
+  return { planId: 'free', blocked: false };
+}
 import { AppError } from '../../shared/errors.js';
 import { assertBillingReady } from './stripe.policy.js';
 
