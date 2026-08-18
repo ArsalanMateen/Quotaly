@@ -9,6 +9,8 @@ import { webhookRoutes } from './modules/billing/webhook.routes.js';
 import { sandboxRoutes } from './modules/sandbox/routes.js';
 import { healthRoutes } from './http/health.routes.js';
 import { authenticate } from './http/middleware/authenticate.js';
+import { requestPolicy } from './http/middleware/request.policy.js';
+import { securityHeaders } from './http/middleware/security.headers.js';
 import { errorHandler, notFound } from './http/middleware/errors.js';
 
 export function createApp(dependencies) {
@@ -25,6 +27,7 @@ export function createApp(dependencies) {
 
   app.disable('x-powered-by');
   app.set('trust proxy', config.production ? 1 : false);
+  app.use(requestPolicy, securityHeaders);
 
   app.use(webhookRoutes(payments));
   app.use(express.json({ limit: '16kb' }));
