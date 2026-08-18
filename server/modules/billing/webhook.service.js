@@ -32,6 +32,8 @@ export function webhookService({ db, client, stripe, config, clock = () => new D
     if (!subscriptionId || !customerId)
       throw new AppError(400, 'invalid_event', 'Event is missing its subscription or customer.');
 
+    if (await db.collection('stripe_events').findOne({ _id: event.id }))
+      return { received: true, duplicate: true };
     const tenant = await db.collection('tenants').findOne({ stripeCustomerId: customerId });
     if (!tenant)
       throw new AppError(503, 'workspace_not_ready', 'The workspace is not ready for this event.');
@@ -50,29 +52,34 @@ export function webhookService({ db, client, stripe, config, clock = () => new D
       items.length === 1 && items[0].price.id === config.proPriceId && items[0].quantity === 1;
     const state = subscriptionState(subscription.status, supported);
 
-    await transaction(client, async (session) => {
-      await db.collection('stripe_events').insertOne(
-        { _id: event.id, receivedAt: clock() },
-        { session },
-      );
-      await db.collection('tenants').updateOne(
-        { _id: tenant._id },
-        { $inc: { serial: 1 } },
-        { session },
-      );
-      await db.collection('subscriptions').updateOne(
-        { _id: tenant._id },
-        {
-          $set: {
-            ...state,
-            status: subscription.status,
-            stripeSubscriptionId: subscription.id,
-            syncedAt: clock(),
+    try {
+      await transaction(client, async (session) => {
+        await db.collection('stripe_events').insertOne(
+          { _id: event.id, receivedAt: clock() },
+          { session },
+        );
+        await db.collection('tenants').updateOne(
+          { _id: tenant._id },
+          { $inc: { serial: 1 } },
+          { session },
+        );
+        await db.collection('subscriptions').updateOne(
+          { _id: tenant._id },
+          {
+            $set: {
+              ...state,
+              status: subscription.status,
+              stripeSubscriptionId: subscription.id,
+              syncedAt: clock(),
+            },
           },
-        },
-        { session },
-      );
-    });
+          { session },
+        );
+      });
+    } catch (error) {
+      if (error.code === 11000) return { received: true, duplicate: true };
+      throw error;
+    }
 
     return { received: true, duplicate: false };
   }
