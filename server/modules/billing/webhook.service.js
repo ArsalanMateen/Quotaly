@@ -55,6 +55,11 @@ export function webhookService({ db, client, stripe, config, clock = () => new D
         { _id: event.id, receivedAt: clock() },
         { session },
       );
+      await db.collection('tenants').updateOne(
+        { _id: tenant._id },
+        { $inc: { serial: 1 } },
+        { session },
+      );
       await db.collection('subscriptions').updateOne(
         { _id: tenant._id },
         {
