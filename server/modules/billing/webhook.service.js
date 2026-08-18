@@ -36,7 +36,12 @@ export function webhookService({ db, client, stripe, config, clock = () => new D
     if (!tenant)
       throw new AppError(503, 'workspace_not_ready', 'The workspace is not ready for this event.');
 
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    let subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const local = await db.collection('subscriptions').findOne({ _id: tenant._id });
+    if (local?.stripeSubscriptionId && local.stripeSubscriptionId !== subscription.id) {
+      const latest = await stripe.subscriptions.retrieve(local.stripeSubscriptionId);
+      if (latest.created >= subscription.created) subscription = latest;
+    }
     if (subscription.livemode !== false || idOf(subscription.customer) !== customerId)
       throw new AppError(400, 'invalid_subscription', 'Stripe subscription does not match.');
 
