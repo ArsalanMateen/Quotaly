@@ -1,0 +1,249 @@
+.markdown {
+  font-family: inherit;
+  font-size: 14.5px;
+  line-height: 1.68;
+  color: #233a32;
+  word-break: break-word;
+}
+
+.markdown > *:first-child {
+  margin-top: 0;
+}
+
+.markdown > *:last-child {
+  margin-bottom: 0;
+}
+
+.markdown p {
+  margin: 0 0 12px 0;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  color: #172a22;
+  font-weight: 650;
+  margin: 18px 0 8px 0;
+  line-height: 1.35;
+}
+
+.markdown h1 {
+  font-size: 1.35rem;
+}
+.markdown h2 {
+  font-size: 1.2rem;
+}
+.markdown h3 {
+  font-size: 1.1rem;
+}
+.markdown h4 {
+  font-size: 1rem;
+}
+
+.markdown ul,
+.markdown ol {
+  margin: 0 0 14px 0;
+  padding-left: 24px;
+}
+
+.markdown li {
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+
+.markdown li::marker {
+  color: #4c6b50;
+}
+
+.markdown strong {
+  font-weight: 650;
+  color: #12241c;
+}
+
+.markdown em {
+  font-style: italic;
+  color: #2a4034;
+}
+
+.markdown code {
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.86em;
+  background: #f8faf8;
+  color: #172a22;
+  padding: 2.5px 6.5px;
+  border-radius: 5px;
+  border: 1px solid #dce4d9;
+  font-weight: 550;
+}
+
+.markdown pre {
+  margin: 16px 0;
+  padding: 16px 18px;
+  background: #f8faf8;
+  color: #172a22;
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid #dce4d9;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.markdown pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border: none;
+  font-size: 13px;
+  line-height: 1.65;
+  border-radius: 0;
+}
+
+.codeBlock {
+  margin: 18px 0;
+  background: #f8faf8;
+  border: 1px solid #dce4d9;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(20, 36, 25, 0.04);
+}
+
+.codeHeader {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: #edf3ea;
+  border-bottom: 1px solid #dce4d9;
+}
+
+.codeLang {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #507256;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.codePre {
+  margin: 0 !important;
+  padding: 14px 16px !important;
+  background: #f8faf8 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  overflow-x: auto;
+}
+
+.codePre code {
+  background: transparent !important;
+  color: #172a22 !important;
+  padding: 0 !important;
+  border: none !important;
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
+  font-weight: 400 !important;
+  display: block;
+  white-space: pre;
+}
+
+.codeBlock :global(.token.comment),
+.codeBlock :global(.token.prolog),
+.codeBlock :global(.token.doctype),
+.codeBlock :global(.token.cdata) {
+  color: #6e7781;
+  font-style: italic;
+}
+
+.codeBlock :global(.token.punctuation) {
+  color: #24292f;
+}
+
+.codeBlock :global(.token.property),
+.codeBlock :global(.token.tag) {
+  color: #116329;
+}
+
+.codeBlock :global(.token.boolean),
+.codeBlock :global(.token.number),
+.codeBlock :global(.token.constant),
+.codeBlock :global(.token.symbol) {
+  color: #0550ae;
+}
+
+.codeBlock :global(.token.selector),
+.codeBlock :global(.token.attr-name) {
+  color: #953800;
+}
+
+.codeBlock :global(.token.string),
+.codeBlock :global(.token.char),
+.codeBlock :global(.token.builtin),
+.codeBlock :global(.token.attr-value) {
+  color: #0a3069;
+}
+
+.codeBlock :global(.token.operator),
+.codeBlock :global(.token.entity),
+.codeBlock :global(.token.url) {
+  color: #0550ae;
+}
+
+.codeBlock :global(.token.atrule),
+.codeBlock :global(.token.keyword) {
+  color: #cf222e;
+  font-weight: 550;
+}
+
+.codeBlock :global(.token.function),
+.codeBlock :global(.token.class-name) {
+  color: #8250df;
+}
+
+.codeBlock :global(.token.regex),
+.codeBlock :global(.token.important) {
+  color: #116329;
+}
+
+.codeBlock :global(.token.variable) {
+  color: #953800;
+}
+
+.codeBlock :global(.token.deleted) {
+  color: #82071e;
+  background-color: #ffebe9;
+}
+
+.codeBlock :global(.token.inserted) {
+  color: #116329;
+  background-color: #dafbe1;
+}
+
+.markdown blockquote {
+  margin: 14px 0;
+  padding: 8px 16px;
+  border-left: 3px solid #638561;
+  background: #f4f7f3;
+  color: #415545;
+  border-radius: 0 6px 6px 0;
+}
+
+.markdown hr {
+  border: 0;
+  height: 1px;
+  background: #e2e8df;
+  margin: 18px 0;
+}
+
+.markdown a {
+  color: #1e5a30;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.markdown a:hover {
+  color: #123e1f;
+}
