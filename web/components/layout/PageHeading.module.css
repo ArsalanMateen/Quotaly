@@ -1,0 +1,18 @@
+.pageHeading {
+  margin-bottom: 31px;
+}
+
+.pageHeading__title {
+  font:
+    650 32px 'Manrope',
+    sans-serif;
+  letter-spacing: -1.4px;
+  margin: 0 0 10px;
+  color: #253f32;
+}
+
+.pageHeading__description {
+  font-size: 14px;
+  color: #5f6e64;
+  margin: 0;
+}
