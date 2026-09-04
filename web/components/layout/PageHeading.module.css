@@ -16,3 +16,9 @@
   color: #5f6e64;
   margin: 0;
 }
+
+@media (max-width: 930px) {
+  .pageHeading__title {
+    font-size: 29px;
+  }
+}

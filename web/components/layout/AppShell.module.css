@@ -59,3 +59,49 @@
   max-width: 1550px;
   margin: auto;
 }
+
+@media (min-width: 1500px) {
+  .appShell__content {
+    padding-top: 48px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .appShell__main {
+    margin-left: 205px;
+  }
+  .appShell__content {
+    padding: 30px 26px 20px;
+  }
+  .appShell__topbar {
+    padding: 0 26px;
+  }
+}
+
+@media (max-width: 930px) {
+  .appShell__main {
+    margin-left: 75px;
+  }
+}
+
+@media (max-width: 650px) {
+  .appShell {
+    display: block;
+  }
+  .appShell__main {
+    margin: 0;
+  }
+  .appShell__topbar {
+    height: 60px;
+    padding: 0 20px;
+  }
+  .appShell__actions {
+    gap: 12px;
+  }
+  .appShell__content {
+    padding: 26px 20px 20px;
+  }
+  .appShell__topbar .appShell__slash {
+    margin: 0 9px;
+  }
+}
