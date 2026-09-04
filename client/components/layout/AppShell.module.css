@@ -1,61 +1,49 @@
-.appShell {
+.root {
   display: flex;
   min-height: 100vh;
 }
 
-.appShell__main {
+.main {
   margin-left: 240px;
   flex: 1;
   min-width: 0;
 }
 
-.appShell__topbar {
-  height: 78px;
-  padding: 0 44px;
-  border-bottom: 1px solid #e6ece7;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #ffffffb3;
-  font-size: 13px;
-  color: #657269;
-}
-
-.appShell__title {
-  font-weight: 500;
-  color: #344c3e;
-}
-
-.appShell__slash {
-  margin: 0 17px;
-  color: #cbd3cb;
-}
-
-.appShell__actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.appShell__actions .appShell__disconnect {
-  background: #f0f2e9;
-  color: #536044;
-  border: 1px solid #e3e6d7;
-  border-radius: 9999px;
-  padding: 6px 18px;
-  font-size: 13px;
-  font-weight: 500;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-
-.appShell__actions .appShell__disconnect:hover:not(:disabled) {
-  background: #e4e7db;
-  color: #38452d;
-  border-color: #d8dcce;
-}
-
-.appShell__content {
+.content {
   padding: 38px 44px 20px;
   max-width: 1550px;
   margin: auto;
+}
+
+@media (min-width: 1500px) {
+  .content {
+    padding-top: 48px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .main {
+    margin-left: 205px;
+  }
+  .content {
+    padding: 30px 26px 20px;
+  }
+}
+
+@media (max-width: 930px) {
+  .main {
+    margin-left: 75px;
+  }
+}
+
+@media (max-width: 650px) {
+  .root {
+    display: block;
+  }
+  .main {
+    margin: 0;
+  }
+  .content {
+    padding: 26px 20px 20px;
+  }
 }
