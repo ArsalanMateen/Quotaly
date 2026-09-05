@@ -1,0 +1,27 @@
+.panel {
+  background: #fff;
+  border: 1px solid #e1e8df;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.panel--empty {
+  padding: 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #65745b;
+}
+
+.panel--empty strong {
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 10px;
+  color: #748967;
+}
+
+.panel--empty p {
+  font-size: 12px;
+  margin-bottom: 0;
+}

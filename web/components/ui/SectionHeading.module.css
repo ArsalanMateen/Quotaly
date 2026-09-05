@@ -1,0 +1,32 @@
+.sectionHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 26px 0;
+}
+
+.sectionHeading__title {
+  font:
+    650 17px 'Manrope',
+    sans-serif;
+  margin: 0 0 7px;
+  letter-spacing: -0.45px;
+}
+
+.sectionHeading__description {
+  font-size: 13px;
+  margin: 0;
+  color: #5f6d62;
+}
+
+@media (max-width: 1180px) {
+  .sectionHeading {
+    padding-inline: 20px;
+  }
+}
+
+@media (max-width: 650px) {
+  .sectionHeading__title {
+    font-size: 16px;
+  }
+}
