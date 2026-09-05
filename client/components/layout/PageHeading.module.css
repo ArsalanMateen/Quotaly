@@ -1,0 +1,61 @@
+.root {
+  margin-bottom: 31px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.title {
+  font:
+    650 32px "Manrope",
+    sans-serif;
+  letter-spacing: -1.4px;
+  margin: 0 0 10px;
+  color: #253f32;
+}
+
+.description {
+  font-size: 14px;
+  color: #5f6e64;
+  margin: 0;
+}
+
+.disconnectButton {
+  background: #f0f2e9;
+  color: #536044;
+  border: 1px solid #e3e6d7;
+  border-radius: 9999px;
+  padding: 6px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.disconnectButton:hover:not(:disabled) {
+  background: #e4e7db;
+  color: #38452d;
+  border-color: #d8dcce;
+}
+
+@media (max-width: 930px) {
+  .title {
+    font-size: 29px;
+  }
+}
+
+@media (max-width: 650px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

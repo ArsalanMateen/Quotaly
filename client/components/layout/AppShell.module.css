@@ -1,0 +1,49 @@
+.root {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  margin-left: 240px;
+  flex: 1;
+  min-width: 0;
+}
+
+.content {
+  padding: 38px 44px 20px;
+  max-width: 1550px;
+  margin: auto;
+}
+
+@media (min-width: 1500px) {
+  .content {
+    padding-top: 48px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .main {
+    margin-left: 205px;
+  }
+  .content {
+    padding: 30px 26px 20px;
+  }
+}
+
+@media (max-width: 930px) {
+  .main {
+    margin-left: 75px;
+  }
+}
+
+@media (max-width: 650px) {
+  .root {
+    display: block;
+  }
+  .main {
+    margin: 0;
+  }
+  .content {
+    padding: 26px 20px 20px;
+  }
+}
