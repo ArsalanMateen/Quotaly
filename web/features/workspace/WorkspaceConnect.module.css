@@ -1,0 +1,153 @@
+.workspaceConnect {
+  background: #fff;
+  border: 1px solid #e0e8d9;
+  border-radius: 13px;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  overflow: hidden;
+}
+
+.workspaceConnect__art {
+  position: relative;
+  background: #214a36;
+  overflow: hidden;
+  padding: 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 340px;
+}
+
+.workspaceConnect__orb {
+  position: absolute;
+  border-radius: 50%;
+  width: 320px;
+  height: 320px;
+  border: 1px solid #ffffff16;
+  top: 20px;
+  left: 150px;
+}
+
+.workspaceConnect__orb--secondary {
+  width: 240px;
+  height: 240px;
+  left: 190px;
+  top: 60px;
+  background: #ffffff04;
+}
+
+.workspaceConnect__glyph {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border: 1px solid #aac58a44;
+  border-radius: 19px;
+  display: grid;
+  place-items: center;
+  color: #c5dea2;
+  background: #ffffff06;
+  transform: rotate(-6deg);
+  margin-top: 10px;
+}
+
+.workspaceConnect__glyph svg {
+  width: 34px;
+  height: 34px;
+}
+
+.workspaceConnect__caption {
+  position: relative;
+  font:
+    500 40px/1.25 'Manrope',
+    sans-serif;
+  letter-spacing: -1.5px;
+  color: #f0f5e6;
+}
+
+.workspaceConnect__caption em {
+  font-style: normal;
+  color: #bcce9d;
+}
+
+.workspaceConnect__content {
+  padding: 32px 45px;
+  align-self: center;
+}
+
+.workspaceConnect__title {
+  font:
+    600 28px/1.25 'Manrope',
+    sans-serif;
+  letter-spacing: -0.9px;
+  margin: 10px 0 12px;
+}
+
+.workspaceConnect__description {
+  color: #5f6f5d;
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: 18px;
+  max-width: 340px;
+}
+
+.workspaceConnect__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.workspaceConnect__button {
+  width: 100%;
+  min-width: 190px;
+  justify-content: center;
+}
+
+.workspaceConnect__freshButton {
+  width: 100%;
+  justify-content: center;
+  font-size: 13px;
+  color: #5f6f5d;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.workspaceConnect__freshButton:hover:not(:disabled) {
+  color: #244d38;
+}
+
+@media (max-width: 1180px) {
+  .workspaceConnect__content {
+    padding: 32px;
+  }
+  .workspaceConnect__art {
+    padding: 32px;
+  }
+  .workspaceConnect__caption {
+    font-size: 33px;
+  }
+}
+
+@media (max-width: 930px) {
+  .workspaceConnect__art {
+    padding: 25px;
+  }
+  .workspaceConnect__caption {
+    font-size: 29px;
+  }
+  .workspaceConnect__content {
+    padding: 30px 25px;
+  }
+}
+
+@media (max-width: 650px) {
+  .workspaceConnect {
+    grid-template-columns: 1fr;
+  }
+  .workspaceConnect__art {
+    display: none;
+  }
+  .workspaceConnect__content {
+    padding: 33px 25px;
+  }
+}
