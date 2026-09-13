@@ -18,4 +18,12 @@ export const quotaly = {
     await request('/sandbox/session', { method: 'DELETE', signal });
     clearWorkspaceToken();
   },
+  async workspace(signal) {
+    const [usage, result] = await Promise.all([
+      request('/usage', { signal }),
+      request('/events', { signal }),
+    ]);
+
+    return { usage, events: result.events };
+  },
 };
