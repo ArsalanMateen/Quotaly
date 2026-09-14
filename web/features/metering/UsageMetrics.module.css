@@ -1,0 +1,13 @@
+.usageMetrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 650px) {
+  .usageMetrics {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
