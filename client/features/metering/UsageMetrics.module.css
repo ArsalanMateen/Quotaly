@@ -1,0 +1,13 @@
+.root {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 18px;
+  height: 100%;
+}
+
+@media (max-width: 650px) {
+  .root {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
