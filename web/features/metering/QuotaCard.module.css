@@ -1,0 +1,25 @@
+.quotaCard__icon {
+  color: #97a58d;
+}
+
+.quotaCard__progress {
+  height: 5px;
+  background: #eff3eb;
+  border-radius: 4px;
+  margin: 22px 0 10px;
+  overflow: hidden;
+}
+
+.quotaCard__bar {
+  height: 100%;
+  display: block;
+  background: #839e62;
+  border-radius: 4px;
+  min-width: 0;
+}
+
+@media (max-width: 650px) {
+  .quotaCard__progress {
+    margin-top: 17px;
+  }
+}
