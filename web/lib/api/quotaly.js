@@ -26,4 +26,11 @@ export const quotaly = {
 
     return { usage, events: result.events };
   },
+  generate: (submission, signal) =>
+    request('/generate', {
+      signal,
+      method: 'POST',
+      body: submission.body,
+      headers: { 'Idempotency-Key': submission.key },
+    }),
 };
