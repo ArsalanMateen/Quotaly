@@ -4,6 +4,7 @@ import { hasWorkspaceToken } from '../lib/api/client.js';
 import { useAsyncAction } from '../hooks/useAsyncAction.js';
 import { useSession } from '../features/workspace/useSession.js';
 import { useWorkspaceData } from '../features/workspace/useWorkspaceData.js';
+import { useGeneration } from '../features/metering/useGeneration.js';
 
 export function useWorkspace() {
   const identity = useSession();
@@ -14,6 +15,10 @@ export function useWorkspace() {
   }, [session, invalidate]);
   const operation = useAsyncAction(handleError);
   const { run } = operation;
+  const refreshAfterMutation = useCallback(async () => {
+    try { await data.refresh(); } catch { void 0; }
+  }, [data.refresh]);
+  const generation = useGeneration(session, run, refreshAfterMutation);
 
   return {
     session,
@@ -21,6 +26,7 @@ export function useWorkspace() {
     busy: operation.busy,
     loading: identity.loading,
     canResume: hasWorkspaceToken(),
+    isGenerating: generation.isGenerating,
     notice: operation.notice || ((data.error || identity.error)
       ? { error: true, text: (data.error || identity.error).message }
       : null),
@@ -30,6 +36,7 @@ export function useWorkspace() {
       identity.dismissError();
     },
     actions: {
+      ...generation,
       startSandbox: () => run(async (signal) => {
         await quotaly.startSandbox(signal);
         if (!signal.aborted) activate();
