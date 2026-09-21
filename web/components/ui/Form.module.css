@@ -1,0 +1,23 @@
+.formField__label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #607461;
+  display: block;
+}
+
+.formField__input {
+  display: block;
+  width: 100%;
+  border: 1px solid #dfe6da;
+  border-radius: 6px;
+  background: #fdfefb;
+  color: #354d38;
+  padding: 10px 12px;
+  margin: 8px 0 6px;
+  font-size: 14px;
+}
+
+.formField__input:focus {
+  outline: 2px solid #9ebc80;
+  outline-offset: 1px;
+}

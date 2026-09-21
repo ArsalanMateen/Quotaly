@@ -37,7 +37,7 @@ export function clearWorkspaceToken() {
   sessionStorage.removeItem(disconnectedKey);
 }
 
-export async function request(path, { method = 'GET', body, signal } = {}) {
+export async function request(path, { method = 'GET', body, headers, signal } = {}) {
   const token = sessionStorage.getItem(workspaceTokenKey);
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method,
@@ -45,6 +45,7 @@ export async function request(path, { method = 'GET', body, signal } = {}) {
     headers: {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+      ...headers,
     },
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
   });
