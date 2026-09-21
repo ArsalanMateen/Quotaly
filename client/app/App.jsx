@@ -51,7 +51,7 @@ export default function App() {
           onStartFresh={startFresh}
         />
       ) : session && snapshot ? (
-        <WorkspaceDashboard snapshot={snapshot} />
+        <WorkspaceDashboard snapshot={snapshot} busy={busy} isGenerating={isGenerating} actions={actions} />
       ) : notice ? (
         <Panel as="section" empty>
           <strong>Workspace could not be loaded.</strong>
