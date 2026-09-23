@@ -1,0 +1,36 @@
+.sandboxControls {
+  background: #eef4e7;
+  border: 1px solid #dae5cd;
+  border-radius: 10px;
+  padding: 20px 23px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+}
+
+.sandboxControls__title {
+  font-size: 15px;
+  color: #355538;
+}
+
+.sandboxControls__description {
+  margin: 6px 0 0;
+  color: #566b50;
+  font-size: 13px;
+}
+
+.sandboxControls__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-left: auto;
+}
+
+@media (max-width: 650px) {
+  .sandboxControls__actions {
+    margin-left: 0;
+  }
+}
