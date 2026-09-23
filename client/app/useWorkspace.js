@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { quotaly } from '../lib/api/quotaly.js';
 import { hasWorkspaceToken } from '../lib/api/client.js';
 import { useAsyncAction } from '../hooks/useAsyncAction.js';
@@ -6,7 +6,10 @@ import { useSession } from '../features/workspace/useSession.js';
 import { useWorkspaceData } from '../features/workspace/useWorkspaceData.js';
 import { useGeneration } from '../features/metering/useGeneration.js';
 
-export function useWorkspace() {
+export function useWorkspace(currentPage = 'overview') {
+  const currentPageRef = useRef(currentPage);
+  currentPageRef.current = currentPage;
+
   const identity = useSession();
   const { session, activate, invalidate } = identity;
   const data = useWorkspaceData(session);
@@ -19,6 +22,7 @@ export function useWorkspace() {
     try { await data.refresh(); } catch { void 0; }
   }, [data.refresh]);
   const generation = useGeneration(session, run, refreshAfterMutation);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   return {
     session,
@@ -27,6 +31,7 @@ export function useWorkspace() {
     loading: identity.loading,
     canResume: hasWorkspaceToken(),
     isGenerating: generation.isGenerating,
+    isRefreshing,
     notice: operation.notice || ((data.error || identity.error)
       ? { error: true, text: (data.error || identity.error).message }
       : null),
@@ -50,7 +55,16 @@ export function useWorkspace() {
         quotaly.disconnect();
         invalidate(session?.id);
       },
-      refresh: () => run(() => data.refresh()),
+      resetUsage: () => run(async (signal) => {
+        await quotaly.resetSandbox(signal);
+        if (signal.aborted) return;
+        await refreshAfterMutation();
+        return "Usage has been reset. You're ready to start fresh.";
+      }),
+      refresh: () => run(async () => {
+        setIsRefreshing(true);
+        try { await data.refresh(); } finally { setIsRefreshing(false); }
+      }),
     },
   };
 }
