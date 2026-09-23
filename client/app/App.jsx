@@ -16,6 +16,13 @@ const navigation = [
     label: "Overview",
     heading: "Usage at a glance.",
     description: "Keep an eye on what you consume and stay comfortably within your plan.",
+  },
+  {
+    id: "activity",
+    icon: "pulse",
+    label: "Usage activity",
+    heading: "A clear record.",
+    description: "Every successful action, counted exactly once.",
   }
 ];
 const pageDetails = (page) => navigation.find((item) => item.id === page);
@@ -51,7 +58,7 @@ export default function App() {
           onStartFresh={startFresh}
         />
       ) : session && snapshot ? (
-        <WorkspaceDashboard snapshot={snapshot} busy={busy} isGenerating={isGenerating} lastResult={lastResult} actions={actions} />
+        <WorkspaceDashboard page={page} snapshot={snapshot} busy={busy} isGenerating={isGenerating} lastResult={lastResult} actions={actions} />
       ) : notice ? (
         <Panel as="section" empty>
           <strong>Workspace could not be loaded.</strong>
