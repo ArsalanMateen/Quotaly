@@ -33,4 +33,5 @@ export const quotaly = {
       body: submission.body,
       headers: { 'Idempotency-Key': submission.key },
     }),
+  resetSandbox: (signal) => request('/sandbox/reset', { signal, method: 'POST', body: {} }),
 };

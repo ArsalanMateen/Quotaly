@@ -1,0 +1,58 @@
+.root {
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+}
+
+.title {
+  font:
+    650 16px "Manrope",
+    sans-serif;
+  letter-spacing: -0.4px;
+  color: #253f32;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.actionButton {
+  background: #f0f2e9;
+  color: #536044;
+  border: 1px solid #e3e6d7;
+  border-radius: 9999px;
+  padding: 6px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.actionButton:hover:not(:disabled) {
+  background: #e4e7db;
+  color: #38452d;
+  border-color: #d8dcce;
+}
+
+@media (max-width: 1180px) {
+  .root {
+    padding: 16px 20px;
+  }
+}
+
+@media (max-width: 650px) {
+  .actions {
+    margin-left: 0;
+  }
+}
