@@ -12,7 +12,7 @@ import { navigation, pageDetails } from './navigation.js';
 export default function App() {
   const [page, setPage] = useState('overview');
   const details = pageDetails(page);
-  const { session, snapshot, busy, loading, canResume, isGenerating, notice, dismissNotice, actions } = useWorkspace();
+  const { session, snapshot, busy, loading, canResume, isGenerating, isRefreshing, notice, dismissNotice, actions } = useWorkspace();
 
   async function startSandbox() {
     if (await actions.startSandbox()) setPage('overview');
@@ -41,7 +41,7 @@ export default function App() {
           onStartFresh={startFresh}
         />
       ) : session && snapshot ? (
-        <WorkspaceDashboard snapshot={snapshot} busy={busy} isGenerating={isGenerating} actions={actions} />
+        <WorkspaceDashboard page={page} snapshot={snapshot} busy={busy} isGenerating={isGenerating} isRefreshing={isRefreshing} actions={actions} />
       ) : (
         <Panel as="section" empty aria-busy={!notice}>
           <strong>{notice ? 'Workspace could not be loaded.' : 'Loading your workspace…'}</strong>
