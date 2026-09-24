@@ -1,0 +1,175 @@
+.root {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.card {
+  padding: 32px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.card h2 {
+  font:
+    600 34px "Manrope",
+    sans-serif;
+  letter-spacing: -1px;
+  margin: 15px 0 10px;
+}
+
+.card p {
+  color: #5d6f54;
+  font-size: 14px;
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+.cardPro {
+  background: #1f4835 !important;
+  border: 1px solid #28543e !important;
+  color: #ecf4e2 !important;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tagPro {
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  font-weight: 600;
+  color: #8ea982;
+  text-transform: uppercase;
+}
+
+.symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #c2d998;
+  flex-shrink: 0;
+}
+
+.titlePro {
+  color: #ffffff !important;
+}
+
+.suffix {
+  font:
+    400 15px "DM Sans",
+    sans-serif;
+  color: #96b39c;
+  margin-left: 8px;
+  letter-spacing: 0;
+}
+
+.descriptionPro {
+  color: #a3bda6 !important;
+  font-size: 13.5px !important;
+  line-height: 1.7 !important;
+  margin: 0 !important;
+}
+
+.rule {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 20px 0;
+}
+
+.ruleLight {
+  height: 1px;
+  background: #e8ede5;
+  margin: 20px 0;
+}
+
+.allowance {
+  margin: 14px 0;
+  color: #5b7250;
+  font-size: 13.5px;
+}
+
+.allowancePro {
+  color: #ecf4e2 !important;
+}
+
+.allowancePro svg {
+  color: #a7c984 !important;
+}
+
+.buttonPro {
+  border: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  width: 100%;
+  background: #d4e8b2;
+  color: #335234;
+  margin-top: auto;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  min-height: 42px;
+}
+
+.buttonPro:hover:not(:disabled) {
+  background: #c3dc9c;
+}
+
+.buttonPro:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.proSpinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(51, 82, 52, 0.3);
+  border-top-color: #335234;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.smallPro {
+  color: #8da985 !important;
+}
+
+.card small {
+  display: block;
+  font-size: 12px;
+  color: #66755e;
+  margin-top: auto;
+  padding-top: 22px;
+}
+
+.help {
+  grid-column: 1/-1;
+  color: #5d6a55;
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+@media (max-width: 650px) {
+  .root {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 26px;
+  }
+}
