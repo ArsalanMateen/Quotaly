@@ -1,0 +1,60 @@
+.root {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.card {
+  padding: 32px;
+}
+
+.card h2 {
+  font:
+    600 34px "Manrope",
+    sans-serif;
+  letter-spacing: -1px;
+  margin: 20px 0 12px;
+}
+
+.card p {
+  color: #5d6f54;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.cardPro {
+  background: #f0f5e6;
+}
+
+.allowance {
+  margin: 20px 0;
+  color: #6d855d;
+}
+
+.card button {
+  margin-top: 30px;
+}
+
+.card small {
+  display: block;
+  font-size: 12px;
+  color: #66755e;
+  margin-top: 25px;
+}
+
+.help {
+  grid-column: 1/-1;
+  color: #5d6a55;
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+@media (max-width: 650px) {
+  .root {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 26px;
+  }
+}
