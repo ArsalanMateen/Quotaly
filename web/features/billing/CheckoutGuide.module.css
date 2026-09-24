@@ -1,0 +1,129 @@
+.checkoutGuide {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #17231db8;
+  backdrop-filter: blur(3px);
+}
+
+.checkoutGuide__dialog {
+  width: min(100%, 520px);
+  padding: 30px;
+  border: 1px solid #d9e2d2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 24px 80px #0f1f1738;
+}
+
+.checkoutGuide__title {
+  margin: 10px 0 8px;
+  font:
+    600 24px/1.25 'Manrope',
+    sans-serif;
+  letter-spacing: -0.6px;
+}
+
+.checkoutGuide__description {
+  margin: 0 0 22px;
+  color: #596b55;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.checkoutGuide__card {
+  min-height: 220px;
+  padding: 25px 27px;
+  border-radius: 17px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #f5f8ef;
+  background:
+    radial-gradient(circle at 88% 8%, #adc58a52 0 21%, transparent 22%),
+    linear-gradient(140deg, #173e2d, #2e6044 72%, #78945f);
+  box-shadow:
+    inset 0 1px #ffffff24,
+    0 16px 36px #173e2d26;
+}
+
+.checkoutGuide__cardTop,
+.checkoutGuide__cardBottom {
+  display: flex;
+  align-items: center;
+}
+
+.checkoutGuide__cardTop {
+  justify-content: space-between;
+  color: #d9e6ca;
+  font-size: 11px;
+  letter-spacing: 1.6px;
+  font-weight: 700;
+}
+
+.checkoutGuide__chip {
+  width: 42px;
+  height: 30px;
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, #dfc68b, #f3e6b7 55%, #caa964),
+    repeating-linear-gradient(90deg, transparent 0 6px, #866b3759 7px 8px);
+  box-shadow: inset 0 0 0 1px #664d1f5e;
+}
+
+.checkoutGuide__number {
+  font:
+    650 24px 'Space Grotesk',
+    monospace;
+  letter-spacing: 2.8px;
+  color: #fff;
+  text-shadow: 0 1px 2px #09171099;
+}
+
+.checkoutGuide__cardBottom {
+  justify-content: flex-start;
+  gap: 36px;
+}
+
+.checkoutGuide__cardBottom span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font:
+    600 13px 'Space Grotesk',
+    monospace;
+  letter-spacing: 1.2px;
+}
+
+.checkoutGuide__cardBottom small {
+  font:
+    700 9px sans-serif;
+  letter-spacing: 1.2px;
+  color: #c4d7b2;
+}
+
+.checkoutGuide__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+@media (max-width: 560px) {
+  .checkoutGuide__dialog {
+    padding: 22px;
+  }
+  .checkoutGuide__card {
+    min-height: 195px;
+    padding: 20px;
+  }
+  .checkoutGuide__number {
+    font-size: 18px;
+    letter-spacing: 2px;
+  }
+  .checkoutGuide__cardBottom {
+    gap: 18px;
+  }
+}

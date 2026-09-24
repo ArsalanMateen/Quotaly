@@ -1,0 +1,13 @@
+.planAllowance {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-size: 13px;
+  margin: 13px 0;
+}
+
+.planAllowance svg {
+  height: 13px;
+  width: 13px;
+  color: #a7c984;
+}
