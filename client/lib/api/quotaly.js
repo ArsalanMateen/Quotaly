@@ -1,37 +1,75 @@
-import { clearWorkspaceToken, markDisconnected, request, saveWorkspaceToken } from './client.js';
+import {
+  clearWorkspaceToken,
+  markDisconnected,
+  request,
+  saveWorkspaceToken,
+} from "./client.js";
 
 export const quotaly = {
   async session(signal) {
-    const result = await request('/sandbox/session', { signal });
+    const result = await request("/sandbox/session", { signal });
+
     if (!result.active) clearWorkspaceToken();
+
     return result;
   },
+
   async startSandbox(signal) {
-    const result = await request('/sandbox/session', { method: 'POST', body: {}, signal });
+    const result = await request("/sandbox/session", {
+      method: "POST",
+      body: {},
+      signal,
+    });
+
     saveWorkspaceToken(result.token);
+
     return result;
   },
+
   disconnect() {
     markDisconnected();
   },
+
   async endSandbox(signal) {
-    await request('/sandbox/session', { method: 'DELETE', signal });
+    await request("/sandbox/session", { method: "DELETE", signal });
+
     clearWorkspaceToken();
   },
+
   async workspace(signal) {
     const [usage, result] = await Promise.all([
-      request('/usage', { signal }),
-      request('/events', { signal }),
+      request("/usage", { signal }),
+      request("/events", { signal }),
     ]);
 
     return { usage, events: result.events };
   },
+
   generate: (submission, signal) =>
-    request('/generate', {
+    request("/generate", {
       signal,
-      method: 'POST',
+      method: "POST",
       body: submission.body,
-      headers: { 'Idempotency-Key': submission.key },
+      headers: { "Idempotency-Key": submission.key },
     }),
-  resetSandbox: (signal) => request('/sandbox/reset', { signal, method: 'POST', body: {} }),
+
+  resetSandbox: (signal) =>
+    request("/sandbox/reset", { signal, method: "POST", body: {} }),
+
+  checkout: (signal) =>
+    request("/billing/checkout", { signal, method: "POST", body: {} }),
 };
+
+export function checkoutDestination(value) {
+  const url = new URL(value);
+
+  if (
+    url.protocol !== "https:" ||
+    url.hostname !== "checkout.stripe.com" ||
+    url.username ||
+    url.password
+  )
+    throw new Error("Unexpected Checkout destination.");
+
+  return url.href;
+}
