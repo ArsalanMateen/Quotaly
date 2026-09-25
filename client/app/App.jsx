@@ -6,6 +6,7 @@ import { PageHeading } from "../components/layout/PageHeading.jsx";
 import { Notice } from "../components/ui/Notice.jsx";
 import { WorkspaceConnect } from "../features/workspace/WorkspaceConnect.jsx";
 import { WorkspaceDashboard } from "../features/workspace/WorkspaceDashboard.jsx";
+import { CheckoutNotice } from "../features/billing/CheckoutNotice.jsx";
 import { Spinner } from "../components/ui/Spinner.jsx";
 import { useWorkspace } from "./useWorkspace.js";
 
@@ -15,7 +16,8 @@ const navigation = [
     icon: "grid",
     label: "Overview",
     heading: "Usage at a glance.",
-    description: "Keep an eye on what you consume and stay comfortably within your plan.",
+    description:
+      "Keep an eye on what you consume and stay comfortably within your plan.",
   },
   {
     id: "activity",
@@ -23,15 +25,39 @@ const navigation = [
     label: "Usage activity",
     heading: "A clear record.",
     description: "Every successful action, counted exactly once.",
-  }
+  },
+  {
+    id: "billing",
+    icon: "card",
+    label: "Billing",
+    heading: "Room to grow.",
+    description: "Simple allowances for your next stage.",
+  },
 ];
-const pageDetails = (page) => navigation.find((item) => item.id === page);
 
+const pageDetails = (page) => navigation.find((item) => item.id === page);
 
 export default function App() {
   const [page, setPage] = useState("overview");
+  const [checkoutOutcome, setCheckoutOutcome] = useState(() =>
+    new URLSearchParams(window.location.search).get("checkout"),
+  );
+
   const details = pageDetails(page);
-  const { session, snapshot, busy, loading, canResume, isGenerating, lastResult, notice, dismissNotice, actions } = useWorkspace();
+  const workspace = useWorkspace(page);
+
+  const {
+    session,
+    snapshot,
+    busy,
+    loading,
+    canResume,
+    isGenerating,
+    lastResult,
+    actions,
+    notice,
+    dismissNotice,
+  } = workspace;
 
   async function startSandbox() {
     if (await actions.startSandbox()) setPage("overview");
@@ -49,20 +75,53 @@ export default function App() {
         onDisconnect={session ? actions.disconnect : undefined}
         disconnectDisabled={busy}
       />
-      {notice && <Notice error={notice.error} onDismiss={dismissNotice}>{notice.text}</Notice>}
+
       {!loading && !session ? (
-        <WorkspaceConnect
-          busy={busy}
-          canResume={canResume}
-          onStartSandbox={startSandbox}
-          onStartFresh={startFresh}
-        />
+        <>
+          {notice && notice.page === "connect" && (
+            <Notice
+              error={notice.error}
+              expiresAt={notice.expiresAt}
+              onDismiss={dismissNotice}
+            >
+              {notice.text}
+            </Notice>
+          )}
+
+          <WorkspaceConnect
+            busy={busy}
+            canResume={canResume}
+            onStartSandbox={startSandbox}
+            onStartFresh={startFresh}
+          />
+        </>
       ) : session && snapshot ? (
-        <WorkspaceDashboard page={page} snapshot={snapshot} busy={busy} isGenerating={isGenerating} lastResult={lastResult} actions={actions} />
+        <>
+          <CheckoutNotice
+            outcome={checkoutOutcome}
+            page={page}
+            onDismiss={() => setCheckoutOutcome(null)}
+          />
+
+          <WorkspaceDashboard
+            key={session.id}
+            page={page}
+            snapshot={snapshot}
+            busy={busy}
+            isGenerating={isGenerating}
+            lastResult={lastResult}
+            notice={notice}
+            dismissNotice={dismissNotice}
+            actions={actions}
+            onExplorePlan={() => setPage("billing")}
+          />
+        </>
       ) : notice ? (
         <Panel as="section" empty>
           <strong>Workspace could not be loaded.</strong>
-          <Button variant="secondary" disabled={busy} onClick={actions.refresh}>Try again</Button>
+          <Button variant="secondary" disabled={busy} onClick={actions.refresh}>
+            Try again
+          </Button>
         </Panel>
       ) : (
         <Spinner />
