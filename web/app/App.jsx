@@ -6,13 +6,29 @@ import { PageHeading } from '../components/layout/PageHeading.jsx';
 import { Notice } from '../components/ui/Notice.jsx';
 import { WorkspaceConnect } from '../features/workspace/WorkspaceConnect.jsx';
 import { WorkspaceDashboard } from '../features/workspace/WorkspaceDashboard.jsx';
+import { CheckoutNotice } from '../features/billing/CheckoutNotice.jsx';
 import { useWorkspace } from './useWorkspace.js';
 import { navigation, pageDetails } from './navigation.js';
 
 export default function App() {
   const [page, setPage] = useState('overview');
+  const [checkoutOutcome, setCheckoutOutcome] = useState(() =>
+    new URLSearchParams(window.location.search).get('checkout'),
+  );
   const details = pageDetails(page);
-  const { session, snapshot, busy, loading, canResume, isGenerating, isRefreshing, notice, dismissNotice, actions } = useWorkspace();
+  const workspace = useWorkspace(page);
+  const {
+    session,
+    snapshot,
+    busy,
+    loading,
+    canResume,
+    isGenerating,
+    isRefreshing,
+    actions,
+    notice,
+    dismissNotice,
+  } = workspace;
 
   async function startSandbox() {
     if (await actions.startSandbox()) setPage('overview');
@@ -32,20 +48,48 @@ export default function App() {
       onDisconnect={actions.disconnect}
     >
       <PageHeading title={details.heading} description={details.description} />
-      {notice && <Notice error={notice.error} onDismiss={dismissNotice}>{notice.text}</Notice>}
       {!loading && !session ? (
-        <WorkspaceConnect
-          busy={busy}
-          canResume={canResume}
-          onStartSandbox={startSandbox}
-          onStartFresh={startFresh}
-        />
+        <>
+          {notice && (!notice.page || notice.page === 'connect') && (
+            <Notice error={notice.error} expiresAt={notice.expiresAt} onDismiss={dismissNotice}>
+              {notice.text}
+            </Notice>
+          )}
+          <WorkspaceConnect
+            busy={busy}
+            canResume={canResume}
+            onStartSandbox={startSandbox}
+            onStartFresh={startFresh}
+          />
+        </>
       ) : session && snapshot ? (
-        <WorkspaceDashboard page={page} snapshot={snapshot} busy={busy} isGenerating={isGenerating} isRefreshing={isRefreshing} actions={actions} />
+        <>
+          <CheckoutNotice
+            outcome={checkoutOutcome}
+            page={page}
+            onDismiss={() => setCheckoutOutcome(null)}
+          />
+          <WorkspaceDashboard
+            key={session.id}
+            page={page}
+            snapshot={snapshot}
+            busy={busy}
+            isGenerating={isGenerating}
+            isRefreshing={isRefreshing}
+            notice={notice}
+            dismissNotice={dismissNotice}
+            actions={actions}
+            onExplorePlan={() => setPage('billing')}
+          />
+        </>
       ) : (
         <Panel as="section" empty aria-busy={!notice}>
           <strong>{notice ? 'Workspace could not be loaded.' : 'Loading your workspace…'}</strong>
-          {notice && <Button variant="secondary" disabled={busy} onClick={actions.refresh}>Try again</Button>}
+          {notice && (
+            <Button variant="secondary" disabled={busy} onClick={actions.refresh}>
+              Try again
+            </Button>
+          )}
         </Panel>
       )}
     </AppShell>
