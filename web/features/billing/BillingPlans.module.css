@@ -1,0 +1,60 @@
+.billingPlans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.billingPlans__card {
+  padding: 32px;
+}
+
+.billingPlans__card h2 {
+  font:
+    600 34px 'Manrope',
+    sans-serif;
+  letter-spacing: -1px;
+  margin: 20px 0 12px;
+}
+
+.billingPlans__card p {
+  color: #5d6f54;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.billingPlans__card--pro {
+  background: #f0f5e6;
+}
+
+.billingPlans__allowance {
+  margin: 20px 0;
+  color: #6d855d;
+}
+
+.billingPlans__card button {
+  margin-top: 30px;
+}
+
+.billingPlans__card small {
+  display: block;
+  font-size: 12px;
+  color: #66755e;
+  margin-top: 25px;
+}
+
+.billingPlans__help {
+  grid-column: 1/-1;
+  color: #5d6a55;
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+@media (max-width: 650px) {
+  .billingPlans {
+    grid-template-columns: 1fr;
+  }
+  .billingPlans__card {
+    padding: 26px;
+  }
+}

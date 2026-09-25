@@ -34,4 +34,19 @@ export const quotaly = {
       headers: { 'Idempotency-Key': submission.key },
     }),
   resetSandbox: (signal) => request('/sandbox/reset', { signal, method: 'POST', body: {} }),
+  checkout: (signal) => request('/billing/checkout', { signal, method: 'POST', body: {} }),
 };
+
+export function checkoutDestination(value) {
+  const url = new URL(value);
+
+  if (
+    url.protocol !== 'https:' ||
+    url.hostname !== 'checkout.stripe.com' ||
+    url.username ||
+    url.password
+  )
+    throw new Error('Unexpected Checkout destination.');
+
+  return url.href;
+}

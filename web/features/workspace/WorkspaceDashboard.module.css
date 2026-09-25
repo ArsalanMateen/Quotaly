@@ -1,6 +1,25 @@
 .workspaceDashboard__grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 290px;
   gap: 24px;
   margin-bottom: 24px;
+}
+
+@media (min-width: 1500px) {
+  .workspaceDashboard__grid {
+    grid-template-columns: 1fr 330px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .workspaceDashboard__grid {
+    grid-template-columns: 1fr 245px;
+    gap: 18px;
+  }
+}
+
+@media (max-width: 930px) {
+  .workspaceDashboard__grid {
+    grid-template-columns: 1fr;
+  }
 }
