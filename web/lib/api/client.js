@@ -52,11 +52,25 @@ export async function request(path, { method = 'GET', body, headers, signal } = 
 
   if (response.status === 204) return null;
   const data = await response.json().catch(() => {
-    throw new ApiError('The server is unavailable. Please try again.', response.status);
+    throw new ApiError(
+      'The server is starting or unavailable. Please try again in a moment.',
+      response.status,
+    );
   });
+
   if (!response.ok) {
     if (response.status === 401) clearWorkspaceToken();
-    throw new ApiError(data.error?.message || 'The request could not be completed.', response.status);
+    const details = Array.isArray(data.error?.details)
+      ? data.error.details.map((issue) => issue.message).join(' ')
+      : '';
+    const message =
+      response.status === 401
+        ? 'Your workspace has expired. Open a new workspace to continue.'
+        : [data.error?.message || 'The request could not be completed.', details]
+            .filter(Boolean)
+            .join(' ');
+    throw new ApiError(message, response.status);
   }
+
   return data;
 }
