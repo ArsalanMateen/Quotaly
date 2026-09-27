@@ -6,6 +6,10 @@ The Express backend follows a **modular route, service, and repository structure
 
 Transactions keep each successful generation and its usage totals consistent, while repeated idempotency keys return the original result instead of charging usage twice.
 
+The React app uses reusable components, each with its own styles. It connects to the backend through a shared API client. A temporary token stored in the browser tab keeps your workspace available when you reload the page.
+
+![Quotaly workspace dashboard](./visuals/dashboard.png)
+
 ## API reference
 
 The app uses `/api` endpoints. Opening a workspace gives the browser a temporary token for subsequent requests.
@@ -58,7 +62,17 @@ Set the values in `server/.env`.
 npm run dev --prefix server
 ```
 
-The API runs on **http://127.0.0.1:3000**.
+**Start the client**
+
+Copy `web/.env.example` to `web/.env`. Its `VITE_API_URL` points to the local server by default. In a second terminal:
+
+```bash
+npm run dev --prefix web
+```
+
+Open **http://127.0.0.1:5173** in your browser. The API runs on **http://127.0.0.1:3000**.
+
+Select **Open Workspace** to start. It expires automatically and does not require an account or an API key.
 
 ## License
 
