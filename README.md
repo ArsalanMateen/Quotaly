@@ -1,64 +1,34 @@
-# Quotaly: LLM Usage Metering & Billing Service
+# Quotaly
 
-A MERN stack usage metering and billing application built with **React**, **Express**, and **MongoDB Atlas**. Visitors can open a workspace, record simulated API and token usage, see monthly limits in action, reset their usage, and try a Stripe test checkout.
+Quotaly brings AI usage, token costs, and plan limits into one workspace. See how much you consume, understand the cost of each generation, and know how much room remains in your monthly allowance.
 
-The Express backend follows a **modular route, service, and repository structure**. Metering writes, idempotency records, quota counters, and subscription state are persisted in MongoDB.
+Explore the experience with simulated generations in a temporary workspace. No account or personal API key is required.
 
-Transactions keep each successful generation and its usage totals consistent, while repeated idempotency keys return the original result instead of charging usage twice.
+![Quotaly workspace dashboard](./docs/assets/dashboard.png)
 
-## API reference
+## Make every unit count
 
-The app uses `/api` endpoints. Opening a workspace gives the browser a temporary token for subsequent requests.
+### Understand token costs
 
-| Method | Endpoint | Purpose | Access |
-| --- | --- | --- | --- |
-| `GET` | `/health` | Check API and database availability | Public |
-| `GET` | `/api/sandbox/session` | Check whether a workspace session is active | Public |
-| `POST` | `/api/sandbox/session` | Open or resume a workspace | Public |
-| `DELETE` | `/api/sandbox/session` | Close the current workspace, if active | Public |
-| `POST` | `/api/sandbox/reset` | Reset usage in the current workspace | Bearer token |
-| `GET` | `/api/usage` | Read the current month's usage, limits, and plan | Bearer token |
-| `GET` | `/api/events` | Read recent successful usage events | Bearer token |
-| `POST` | `/api/generate` | Record a simulated generation and enforce quotas | Bearer token |
-| `POST` | `/api/billing/checkout` | Create a Stripe test Checkout session | Bearer token |
-| `POST` | `/api/webhooks/stripe` | Receive a signed Stripe webhook | Stripe signature |
+Enter input and output token counts, including cached input and reasoning tokens, to simulate a generation. Quotaly calculates its cost using the model rates configured in the workspace and adds the result to your usage history.
 
-To record usage, send input and output token counts to `POST /api/generate` with a unique **Idempotency-Key**. The key prevents retries from being counted twice.
+Cached input is part of the input total, and reasoning is part of the output total. These details help you explore cost without counting the same tokens twice.
 
-## Running it locally
+### See limits in action
 
-**Install dependencies**
+Track API calls and tokens against separate monthly allowances. A new generation that would exceed either allowance is blocked before it adds usage or cost.
 
-Use Node.js 24 and npm.
+Use **Reach token limit** to fill the remaining token allowance and see what happens at the boundary. **Reset usage** clears your demo usage and activity so you can try another scenario.
 
-```bash
-npm ci --prefix server
-npm ci --prefix web
-```
+### Retry with confidence
 
-**Configure the server**
+Select **Retry last request** to repeat the previous generation. Quotaly returns the original result without adding another API call, token total, or metered cost.
 
-Copy the environment template:
+## Choose your allowance
 
-```bash
-cp server/.env.example server/.env
-```
+Monthly usage resets on the first day of each month in UTC. Plan changes preserve usage already recorded in the current month.
 
-PowerShell users can run:
-
-```powershell
-Copy-Item server/.env.example server/.env
-```
-
-Set the values in `server/.env`.
-
-**Start the server**
-
-```bash
-npm run dev --prefix server
-```
-
-The API runs on **http://127.0.0.1:3000**.
+When billing is configured, **Upgrade to Pro** opens Stripe test Checkout. The app provides test card details, and the subscription price is shown in Checkout.
 
 ## License
 
