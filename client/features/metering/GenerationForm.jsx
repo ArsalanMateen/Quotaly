@@ -7,7 +7,7 @@ import { SectionHeading } from "../../components/ui/SectionHeading.jsx";
 
 export function GenerationForm({
   busy, canRetry, onGenerate, onRetry, isSandbox, used, limits,
-  paymentRequired, onResetUsage,
+  paymentRequired, onResetUsage, lastResult,
 }) {
   const formId = useId();
   const [prompt, setPrompt] = useState("");
@@ -66,6 +66,15 @@ export function GenerationForm({
             <small className={styles.hint}>Actual output is metered from Gemini usage metadata.</small>
           </div>
         </div>
+        {lastResult && (
+          <section aria-live="polite" style={{ marginTop: 20 }}>
+            <h3>Gemini response</h3>
+            <p style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{lastResult.result}</p>
+            <small className={styles.hint}>
+              {lastResult.model} · {lastResult.usage.inputTokens.toLocaleString()} input + {lastResult.usage.outputTokens.toLocaleString()} output tokens
+            </small>
+          </section>
+        )}
         <div className={styles.actions}>
           <Button type="submit" variant="primary" disabled={busy || paymentRequired || !prompt.trim()}>
             {busy && isSubmitting ? "Generating…" : "Generate response"}
