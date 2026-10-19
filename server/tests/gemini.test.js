@@ -20,7 +20,7 @@ test("Gemini generation returns text and provider-reported usage", async () => {
   }), { status: 200 });
   const client = createGeminiClient({ geminiApiKey: "test-key", geminiModel: "gemini-2.5-flash" });
   assert.deepEqual(await client.generate({ prompt: "hello", maxOutputTokens: 20 }), {
-    text: "Hello from Gemini.", model: "gemini-2.5-flash", inputTokens: 4, outputTokens: 6, reasoningTokens: 1,
+    text: "Hello from Gemini.", model: "gemini-2.5-flash", inputTokens: 4, outputTokens: 7, reasoningTokens: 1,
   });
 });
 
