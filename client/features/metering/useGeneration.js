@@ -5,9 +5,11 @@ import { formatMoney, formatNumber } from "../../lib/format.js";
 export function useGeneration(session, run, refresh, hasEvents) {
   const [last, setLast] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [lastResult, setLastResult] = useState(null);
 
   useEffect(() => {
     setLast(null);
+    setLastResult(null);
   }, [session?.id]);
 
   const canRetry = Boolean(
@@ -34,6 +36,7 @@ export function useGeneration(session, run, refresh, hasEvents) {
         const result = await quotaly.generate(submission, signal);
 
         if (signal.aborted) return;
+        setLastResult(result);
 
         await refresh();
 
@@ -49,7 +52,8 @@ export function useGeneration(session, run, refresh, hasEvents) {
   return {
     generate: (body) => submit(body),
     retry: () => submit(null, true),
-    clearLast: () => setLast(null),
+    clearLast: () => { setLast(null); setLastResult(null); },
+    lastResult,
     canRetry,
     isGenerating,
   };
