@@ -32,7 +32,7 @@ export function createGeminiClient({ geminiApiKey, geminiModel }) {
           `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(geminiModel)}:generateContent`,
           {
             method: "POST",
-            headers: { "content-type": "application/json" },
+            headers: { "content-type": "application/json", "x-goog-api-key": geminiApiKey },
             body: JSON.stringify({
               contents: [{ role: "user", parts: [{ text: prompt }] }],
               generationConfig: { maxOutputTokens },
