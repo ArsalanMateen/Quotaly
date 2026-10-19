@@ -11,6 +11,7 @@ export function WorkspaceDashboard({
   snapshot,
   busy,
   isGenerating,
+  lastResult,
   notice,
   dismissNotice,
   actions,
@@ -41,6 +42,7 @@ export function WorkspaceDashboard({
           <GenerationForm
             busy={busy}
             generating={isGenerating}
+            lastResult={lastResult}
             canRetry={actions.canRetry}
             onGenerate={actions.generate}
             onRetry={actions.retry}
