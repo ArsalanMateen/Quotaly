@@ -53,6 +53,7 @@ export default function App() {
     loading,
     canResume,
     isGenerating,
+    lastResult,
     actions,
     notice,
     dismissNotice,
@@ -112,6 +113,7 @@ export default function App() {
             snapshot={snapshot}
             busy={busy}
             isGenerating={isGenerating}
+            lastResult={lastResult}
             notice={notice}
             dismissNotice={dismissNotice}
             actions={actions}
