@@ -1,34 +1,30 @@
 # Quotaly
 
-Quotaly brings AI usage, token costs, and plan limits into one workspace. See how much you consume, understand the cost of each generation, and know how much room remains in your monthly allowance.
+Quotaly connects real Google Gemini text generation to usage metering, monthly plan limits, cost estimates, usage history, and Stripe billing.
 
-Explore the experience with simulated generations in a temporary workspace. No account or personal API key is required.
+## Configure Gemini
 
-![Quotaly workspace dashboard](./docs/assets/dashboard.png)
+1. Create an API key in [Google AI Studio](https://aistudio.google.com/app/apikey).
+2. Copy `server/.env.example` to `server/.env`.
+3. Set `GEMINI_API_KEY` in `server/.env`. Optionally set `GEMINI_MODEL` (defaults to `gemini-2.5-flash`).
+4. Configure `MONGODB_URI` and any Stripe variables needed for billing.
+5. Start the API from the `server` directory with `npm start`.
 
-## Make every unit count
+The Gemini key is read only by the server. Do not put it in client environment variables, commit it, or return it to the browser. In production, configure it as a secret in your hosting platform.
 
-### Understand token costs
+## Generation and metering
 
-Enter input and output token counts, including cached input and reasoning tokens, to simulate a generation. Quotaly calculates its cost using the model rates configured in the workspace and adds the result to your usage history.
+The workspace sends a prompt and maximum output token setting to the server. The server checks the tenant, subscription, idempotency key, and monthly quotas; asks Gemini to count prompt tokens; limits output to the remaining allowance; then records provider-reported input/output usage, model, and estimated cost. A repeated request with the same idempotency key and payload returns the stored result without charging again. A reused key with a different payload returns a conflict.
 
-Cached input is part of the input total, and reasoning is part of the output total. These details help you explore cost without counting the same tokens twice.
+Gemini pricing is configured in `server/modules/metering/pricing.js` using published standard text-token rates. Verify rates against [Google's pricing page](https://ai.google.dev/gemini-api/docs/pricing) before deployment and update the pricing version when rates change. Metered costs are estimates based on token usage and configured rates, not a replacement for the Google Cloud billing statement.
 
-### See limits in action
+## Billing and quotas
 
-Track API calls and tokens against separate monthly allowances. A new generation that would exceed either allowance is blocked before it adds usage or cost.
+Monthly usage resets on the first day of each month in UTC. The Free and Pro plans retain separate API-call and token allowances. Stripe Checkout remains available when billing credentials are configured. Sandbox reset clears sandbox usage and activity.
 
-Use **Reach token limit** to fill the remaining token allowance and see what happens at the boundary. **Reset usage** clears your demo usage and activity so you can try another scenario.
+## Tests
 
-### Retry with confidence
-
-Select **Retry last request** to repeat the previous generation. Quotaly returns the original result without adding another API call, token total, or metered cost.
-
-## Choose your allowance
-
-Monthly usage resets on the first day of each month in UTC. Plan changes preserve usage already recorded in the current month.
-
-When billing is configured, **Upgrade to Pro** opens Stripe test Checkout. The app provides test card details, and the subscription price is shown in Checkout.
+From `server`, run `npm test`.
 
 ## License
 
