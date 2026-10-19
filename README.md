@@ -6,7 +6,7 @@ Quotaly connects real Google Gemini text generation to usage metering, monthly p
 
 1. Create an API key in [Google AI Studio](https://aistudio.google.com/app/apikey).
 2. Copy `server/.env.example` to `server/.env`.
-3. Set `GEMINI_API_KEY` in `server/.env`. Optionally set `GEMINI_MODEL` (defaults to `gemini-2.5-flash`).
+3. Set `GEMINI_API_KEY` in `server/.env`. The server currently uses `gemini-2.5-flash` so metering matches the configured price schedule.
 4. Configure `MONGODB_URI` and any Stripe variables needed for billing.
 5. Start the API from the `server` directory with `npm start`.
 
