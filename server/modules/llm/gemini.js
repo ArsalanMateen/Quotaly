@@ -6,8 +6,8 @@ export function createGeminiClient({ geminiApiKey, geminiModel }) {
       if (!geminiApiKey)
         throw new AppError(503, "llm_not_configured", "Gemini is not configured. Set GEMINI_API_KEY on the server.");
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(geminiModel)}:countTokens?key=${encodeURIComponent(geminiApiKey)}`,
-        { method: "POST", headers: { "content-type": "application/json" },
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(geminiModel)}:countTokens`,
+        { method: "POST", headers: { "content-type": "application/json", "x-goog-api-key": geminiApiKey },
           body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }] }),
           signal: AbortSignal.timeout(15000) },
       );
@@ -29,7 +29,7 @@ export function createGeminiClient({ geminiApiKey, geminiModel }) {
 
       try {
         const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(geminiModel)}:generateContent?key=${encodeURIComponent(geminiApiKey)}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(geminiModel)}:generateContent`,
           {
             method: "POST",
             headers: { "content-type": "application/json" },
@@ -69,7 +69,7 @@ export function createGeminiClient({ geminiApiKey, geminiModel }) {
           text,
           model: data.modelVersion || geminiModel,
           inputTokens: usage.promptTokenCount,
-          outputTokens: usage.candidatesTokenCount,
+          outputTokens: usage.candidatesTokenCount + (usage.thoughtsTokenCount || 0),
           reasoningTokens: usage.thoughtsTokenCount || 0,
         };
       } catch (error) {
