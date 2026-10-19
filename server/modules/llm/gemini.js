@@ -2,6 +2,20 @@ import { AppError } from "../../shared/errors.js";
 
 export function createGeminiClient({ geminiApiKey, geminiModel }) {
   return {
+    async countTokens(prompt) {
+      if (!geminiApiKey)
+        throw new AppError(503, "llm_not_configured", "Gemini is not configured. Set GEMINI_API_KEY on the server.");
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(geminiModel)}:countTokens?key=${encodeURIComponent(geminiApiKey)}`,
+        { method: "POST", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }] }),
+          signal: AbortSignal.timeout(15000) },
+      );
+      if (!response.ok) throw new AppError(503, "llm_count_failed", "Gemini could not estimate prompt usage. Please try again.");
+      const data = await response.json();
+      if (!Number.isInteger(data.totalTokens)) throw new AppError(502, "llm_usage_unavailable", "Gemini did not return prompt token usage.");
+      return data.totalTokens;
+    },
     async generate({ prompt, maxOutputTokens }) {
       if (!geminiApiKey)
         throw new AppError(
