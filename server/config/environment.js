@@ -7,5 +7,7 @@ export function configuration(env = process.env) {
     stripeKey: env.STRIPE_SECRET_KEY,
     webhookSecret: env.STRIPE_WEBHOOK_SECRET,
     proPriceId: env.STRIPE_PRO_PRICE_ID,
+    geminiApiKey: env.GEMINI_API_KEY,
+    geminiModel: env.GEMINI_MODEL || "gemini-2.5-flash",
   };
 }
