@@ -1,5 +1,6 @@
 import express from "express";
 import { metering } from "./modules/metering/service.js";
+import { createGeminiClient } from "./modules/llm/gemini.js";
 import { billing } from "./modules/billing/index.js";
 import { sandboxService } from "./modules/sandbox/service.js";
 import { tenantRepository } from "./modules/tenants/repository.js";
@@ -17,7 +18,8 @@ export function createApp(dependencies) {
   const { db, config } = dependencies;
   const clock = dependencies.clock || (() => new Date());
 
-  const meter = metering(dependencies);
+  const llm = dependencies.llm || createGeminiClient(config);
+  const meter = metering({ ...dependencies, llm });
   const payments = billing(dependencies);
   const sandbox = sandboxService(dependencies);
 
