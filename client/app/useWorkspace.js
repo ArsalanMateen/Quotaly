@@ -103,6 +103,7 @@ export function useWorkspace(currentPage) {
     loading: identity.loading,
     canResume: hasWorkspaceToken(),
     isGenerating: generation.isGenerating,
+    lastResult: generation.lastResult,
     notice:
       operation.notice ||
       (backgroundError
