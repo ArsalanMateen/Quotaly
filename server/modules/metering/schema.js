@@ -1,31 +1,11 @@
 import { z } from "zod";
 
-const quantity = z.number().int().min(0).max(10000000);
-
 export const generateSchema = z
   .object({
-    inputTokens: quantity,
-    cachedInputTokens: quantity.default(0),
-    outputTokens: quantity,
-    reasoningTokens: quantity.default(0),
+    prompt: z.string().trim().min(1).max(12000),
+    maxOutputTokens: z.number().int().min(1).max(8192).default(1024),
   })
-  .strict()
-  .superRefine((v, ctx) => {
-    if (v.cachedInputTokens > v.inputTokens)
-      ctx.addIssue({
-        code: "custom",
-        path: ["cachedInputTokens"],
-        message:
-          "Cached input tokens cannot be greater than total input tokens.",
-      });
-
-    if (v.reasoningTokens > v.outputTokens)
-      ctx.addIssue({
-        code: "custom",
-        path: ["reasoningTokens"],
-        message: "Reasoning tokens cannot be greater than total output tokens.",
-      });
-  });
+  .strict();
 
 export const keySchema = z
   .string()
