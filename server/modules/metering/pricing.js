@@ -1,33 +1,22 @@
+// Gemini 2.5 Flash standard paid-tier rates, USD per 1M text tokens.
+// Source: https://ai.google.dev/gemini-api/docs/pricing
 export const PRICING = Object.freeze({
-  version: "openai-gpt-5.4-standard",
-  provider: "OpenAI",
-  model: "gpt-5.4",
+  version: "gemini-2.5-flash-standard-2025-06",
+  provider: "Google Gemini",
+  model: "gemini-2.5-flash",
   currency: "USD",
   mode: "standard",
   unit: "USD per 1M tokens",
-  input: 2.5,
-  cachedInput: 0.25,
-  output: 15,
-  longContextThreshold: 272_000,
-  longContextInputMultiplier: 2,
-  longContextOutputMultiplier: 1.5,
-  sourceUrl: "https://developers.openai.com/api/docs/models/gpt-5.4",
+  input: 0.3,
+  cachedInput: 0.03,
+  output: 2.5,
+  sourceUrl: "https://ai.google.dev/gemini-api/docs/pricing",
 });
 
 export function price(input) {
-  const isLongContext = input.inputTokens > PRICING.longContextThreshold;
-  const inputMultiplier = isLongContext
-    ? PRICING.longContextInputMultiplier
-    : 1;
-  const outputMultiplier = isLongContext
-    ? PRICING.longContextOutputMultiplier
-    : 1;
-
-  const freshInputTokens = input.inputTokens - input.cachedInputTokens;
-
+  const freshInputTokens = Math.max(0, input.inputTokens - (input.cachedInputTokens || 0));
   return Math.round(
-    freshInputTokens * PRICING.input * inputMultiplier +
-      input.cachedInputTokens * PRICING.cachedInput * inputMultiplier +
-      input.outputTokens * PRICING.output * outputMultiplier,
+    freshInputTokens * PRICING.input + (input.cachedInputTokens || 0) * PRICING.cachedInput +
+      input.outputTokens * PRICING.output,
   );
 }
